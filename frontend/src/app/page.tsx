@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useAppStore } from "@/lib/store";
 import {
   Bot,
   ScanLine,
@@ -114,6 +116,14 @@ const stats = [
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const router = useRouter();
+  const token = useAppStore((s) => s.token);
+
+  useEffect(() => {
+    if (token) {
+      router.replace("/medications");
+    }
+  }, [token, router]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);

@@ -93,7 +93,7 @@ export default function RegisterPage() {
       });
       setToken(result.access_token);
       setUser(result.user);
-      router.push("/medications");
+      router.replace("/medications");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
