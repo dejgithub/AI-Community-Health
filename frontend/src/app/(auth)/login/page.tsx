@@ -42,7 +42,7 @@ export default function LoginPage() {
       const result = await api.auth.login({ email: data.email, password: data.password });
       setToken(result.access_token);
       setUser(result.user);
-      router.push("/");
+      router.push("/medications");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
