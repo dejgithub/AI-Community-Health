@@ -1,0 +1,38 @@
+# dependencies
+node_modules/
+node_modules_bad/
+.pnp
+.pnp.*
+
+# environment files
+.env
+.env.local
+.env*.local
+
+# build outputs
+.next/
+out/
+build/
+dist/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# misc
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+.coverage
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
