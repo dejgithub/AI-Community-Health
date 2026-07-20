@@ -11,10 +11,18 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        value: "sqlite:///./health_platform.db"
+        fromDatabase:
+          name: mediconnect-db
+          property: connectionString
       - key: ALGORITHM
         value: "HS256"
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: "30"
       - key: CORS_ORIGINS
         value: "https://frontend-rosy-seven-40.vercel.app"
+
+databases:
+  - name: mediconnect-db
+    plan: free
+    databaseName: mediconnect
+    user: mediconnect_user
