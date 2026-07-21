@@ -88,7 +88,10 @@ export default function MedicationsPage() {
   });
 
   const fetchData = useCallback(async () => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     try {

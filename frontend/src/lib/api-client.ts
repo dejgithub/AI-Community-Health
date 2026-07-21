@@ -17,6 +17,14 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     ...fetchOptions,
     headers,
   });
+  if (res.status === 401) {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("mediconnect_token");
+      localStorage.removeItem("mediconnect_user");
+      window.location.href = "/login";
+    }
+    throw new Error("Session expired. Please log in again.");
+  }
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: res.statusText }));
     throw new Error(body.detail || `Request failed: ${res.status}`);
