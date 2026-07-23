@@ -116,11 +116,13 @@ const stats = [
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const router = useRouter();
   const token = useAppStore((s) => s.token);
 
   useEffect(() => {
     if (token) {
+      setRedirecting(true);
       router.replace("/medications");
     }
   }, [token, router]);
@@ -130,6 +132,14 @@ export default function LandingPage() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (redirecting) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

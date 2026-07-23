@@ -34,6 +34,49 @@ def create_medication(
     return MedicationRead.model_validate(med)
 
 
+@router.get("/schedule/today")
+def today_schedule(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    meds = (
+        db.query(Medication)
+        .filter(Medication.user_id == current_user.id, Medication.is_active == True)
+        .all()
+    )
+    schedule = []
+    for med in meds:
+        times = med.times if med.times else ["08:00"]
+        for t in times:
+            schedule.append({
+                "medication_id": med.id,
+                "name": med.name,
+                "dosage": med.dosage,
+                "time": t,
+                "taken": False,
+            })
+    schedule.sort(key=lambda x: x["time"])
+    today = date.today().isoformat()
+    return {"date": today, "schedule": schedule}
+
+
+@router.get("/stats")
+def medication_stats(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    total = db.query(Medication).filter(Medication.user_id == current_user.id).count()
+    active = db.query(Medication).filter(Medication.user_id == current_user.id, Medication.is_active == True).count()
+    return {
+        "total_medications": total,
+        "active_medications": active,
+        "adherence_rate": 87.5,
+        "streak_days": 12,
+        "doses_taken_today": 3,
+        "doses_remaining_today": 1,
+    }
+
+
 @router.get("/{medication_id}", response_model=MedicationRead)
 def get_medication(
     medication_id: int,
@@ -91,47 +134,4 @@ def mark_taken(
         "name": med.name,
         "taken_at": datetime.now().isoformat(),
         "message": f"{med.name} marked as taken",
-    }
-
-
-@router.get("/schedule/today")
-def today_schedule(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-) -> dict:
-    meds = (
-        db.query(Medication)
-        .filter(Medication.user_id == current_user.id, Medication.is_active == True)
-        .all()
-    )
-    schedule = []
-    for med in meds:
-        times = med.times if med.times else ["08:00"]
-        for t in times:
-            schedule.append({
-                "medication_id": med.id,
-                "name": med.name,
-                "dosage": med.dosage,
-                "time": t,
-                "taken": False,
-            })
-    schedule.sort(key=lambda x: x["time"])
-    today = date.today().isoformat()
-    return {"date": today, "schedule": schedule}
-
-
-@router.get("/stats")
-def medication_stats(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-) -> dict:
-    total = db.query(Medication).filter(Medication.user_id == current_user.id).count()
-    active = db.query(Medication).filter(Medication.user_id == current_user.id, Medication.is_active == True).count()
-    return {
-        "total_medications": total,
-        "active_medications": active,
-        "adherence_rate": 87.5,
-        "streak_days": 12,
-        "doses_taken_today": 3,
-        "doses_remaining_today": 1,
     }

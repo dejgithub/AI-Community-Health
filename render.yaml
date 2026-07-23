@@ -20,6 +20,8 @@ services:
         value: "30"
       - key: CORS_ORIGINS
         value: "https://frontend-rosy-seven-40.vercel.app"
+      - key: GEMINI_API_KEY
+        sync: false
 
 databases:
   - name: mediconnect-db

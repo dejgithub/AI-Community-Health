@@ -27,7 +27,9 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   }
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(body.detail || `Request failed: ${res.status}`);
+    const detail = typeof body.detail === "string" ? body.detail : typeof body.detail === "object" ? JSON.stringify(body.detail) : null;
+    const msg = detail || body.error?.message || body.message || `Request failed: ${res.status}`;
+    throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
   }
   if (res.status === 204) return undefined as T;
   return res.json();
@@ -281,8 +283,12 @@ export const api = {
   ai: {
     chat: (messages: { role: string; content: string }[], context?: string) =>
       request<AIChatResponse>("/api/ai/chat", { method: "POST", body: JSON.stringify({ messages, context }) }),
-    analyzeImage: (token: string) =>
-      request<AIImageAnalysisResponse>("/api/ai/analyze-image", { method: "POST", token, body: JSON.stringify({ image: "placeholder" }) }),
+    analyzeImage: (token: string, imageBase64: string, skinCategory?: string) =>
+      request<AIImageAnalysisResponse>("/api/ai/analyze-image", {
+        method: "POST",
+        token,
+        body: JSON.stringify({ image: imageBase64, skin_category: skinCategory || undefined }),
+      }),
     generateReport: (userData: Record<string, unknown>, recordIds: number[] = []) =>
       request<HealthReportResponse>("/api/ai/generate-report", { method: "POST", body: JSON.stringify({ user_data: userData, record_ids: recordIds }) }),
     suggestions: () =>

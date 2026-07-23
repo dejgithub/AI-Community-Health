@@ -86,7 +86,8 @@ export default function DiseaseDetectionPage() {
     setShowResults(false);
     setError(null);
     try {
-      const response = await api.ai.analyzeImage(token);
+      const base64Data = selectedImage.includes(",") ? selectedImage.split(",")[1] : selectedImage;
+      const response = await api.ai.analyzeImage(token, base64Data, selectedCategory || undefined);
       setResults(response.results);
       const allRecommendations = response.results.flatMap((r) => r.recommendations);
       setRecommendations([...new Set(allRecommendations)]);

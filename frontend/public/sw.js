@@ -34,6 +34,10 @@ self.addEventListener("fetch", (event) => {
 
   if (request.method !== "GET") return;
 
+  if (url.hostname === "localhost" || url.hostname === "127.0.0.1") {
+    return;
+  }
+
   if (url.pathname.startsWith("/api/")) {
     event.respondWith(networkFirst(request, API_CACHE_NAME));
     return;

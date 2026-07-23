@@ -1,3 +1,5 @@
+"use client";
+
 import { Stethoscope } from "lucide-react";
 
 export default function AuthLayout({

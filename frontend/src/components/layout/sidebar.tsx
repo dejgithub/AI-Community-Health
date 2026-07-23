@@ -28,8 +28,8 @@ import { useTheme } from "@/components/providers/theme-provider";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: Home },
-  { href: "/ai-chat", label: "AI Health Chat", icon: Bot },
-  { href: "/symptom-checker", label: "Symptom Checker", icon: ScanLine },
+  { href: "/ai-assistant", label: "AI Health Chat", icon: Bot },
+  { href: "/disease-detection", label: "Disease Detection", icon: ScanLine },
   { href: "/emergency", label: "Emergency", icon: Siren },
   { href: "/facility-finder", label: "Find Facilities", icon: MapPin },
   { href: "/medications", label: "Medications", icon: Pill },

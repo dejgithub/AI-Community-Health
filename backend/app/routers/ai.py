@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from pydantic import BaseModel
 
 from app.schemas.health import (
     AIChatRequest,
@@ -12,6 +13,11 @@ from app.services.ai_service import analyze_disease, chat_with_ai, generate_heal
 router = APIRouter(prefix="/api/ai", tags=["ai"])
 
 
+class AnalyzeImageRequest(BaseModel):
+    image: str | None = None
+    skin_category: str | None = None
+
+
 @router.post("/chat", response_model=AIChatResponse)
 async def ai_chat(payload: AIChatRequest) -> AIChatResponse:
     messages = [{"role": m.role, "content": m.content} for m in payload.messages]
@@ -19,9 +25,8 @@ async def ai_chat(payload: AIChatRequest) -> AIChatResponse:
 
 
 @router.post("/analyze-image", response_model=AIImageAnalysisResponse)
-async def ai_analyze_image() -> AIImageAnalysisResponse:
-    """Image-based disease detection (mock). In production, the client would upload an image."""
-    return analyze_disease()
+async def ai_analyze_image(payload: AnalyzeImageRequest) -> AIImageAnalysisResponse:
+    return analyze_disease(image_base64=payload.image, skin_category=payload.skin_category)
 
 
 @router.post("/generate-report", response_model=HealthReportResponse)
